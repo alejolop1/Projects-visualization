@@ -1,7 +1,7 @@
 import pandas as pd
 import streamlit as st
 import plotly.express as px
-from DB_connection import MySQLConnection
+from connection_VE import MySQLConnection
 from streamlit_autorefresh import st_autorefresh
 
 # Configurar la página de Streamlit
