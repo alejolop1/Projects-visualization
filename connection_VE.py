@@ -1,6 +1,6 @@
 import os
 from sqlalchemy import create_engine
-import json
+from sqlalchemy.orm import sessionmaker
 
 class MySQLConnection:
     def __init__(self):
@@ -18,6 +18,12 @@ class MySQLConnection:
             if value is None:
                 raise Exception(f"Falta la variable de entorno: {key}")
 
+        # Crear el motor de SQLAlchemy con un pool de conexiones
+        self.engine = self.conectar()
+
+        # Crear una fábrica de sesiones
+        self.Session = sessionmaker(bind=self.engine)
+
     def conectar(self):
         # Construir la cadena de conexión
         cadena_conexion = (
@@ -25,10 +31,26 @@ class MySQLConnection:
             f'@{self.credenciales["host"]}:{self.credenciales["port"]}/{self.credenciales["database"]}'
         )
         
-        # Crear el motor de SQLAlchemy
-        engine = create_engine(cadena_conexion)
+        # Crear el motor de SQLAlchemy con configuración del pool
+        engine = create_engine(
+            cadena_conexion,
+            pool_size=5,          # Número máximo de conexiones en el pool
+            max_overflow=10,      # Número máximo de conexiones adicionales si el pool está lleno
+            pool_timeout=30,      # Tiempo máximo de espera para obtener una conexión (en segundos)
+            pool_recycle=3600     # Reciclar conexiones después de 1 hora (evita problemas con timeouts)
+        )
         return engine
-    
-    def cerrar_conexion(self, engine):
-        if engine:
-            engine.dispose()
+
+    def obtener_sesion(self):
+        # Obtener una nueva sesión desde el pool
+        return self.Session()
+
+    def cerrar_sesion(self, session):
+        # Cerrar la sesión
+        if session:
+            session.close()
+
+    def cerrar_conexion(self):
+        # Cerrar todas las conexiones del pool
+        if self.engine:
+            self.engine.dispose()
