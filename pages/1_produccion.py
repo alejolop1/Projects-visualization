@@ -127,4 +127,4 @@ finally:
         conexion.cerrar_sesion(session)
 
 # Recargar cada tantos segundos
-st_autorefresh(interval=10 * 1000, key="data_refresh")
+#st_autorefresh(interval=10 * 1000, key="data_refresh")
