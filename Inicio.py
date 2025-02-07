@@ -7,8 +7,8 @@ from connection_VE import MySQLConnection
 st.set_page_config(page_title="Dashboard GIMEL", page_icon=":bar_chart:", layout="wide")
 
 # Crear la conexión
-#conexion = MySQLConnection()
-#engine = conexion.conectar()
+conexion = MySQLConnection()
+engine = conexion.conectar()
 
 st.title(" :bar_chart: Dashboard GIMEL H2")
 #st.markdown('<style>div.block-container{padding-top:1rem;}</style>', unsafe_allow_html=True)
