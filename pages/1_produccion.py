@@ -89,8 +89,8 @@ try:
         df_filtrado = df_filtrado[df_filtrado["analizador"].isin(analizadores)]
 
     # Mostrar tabla de datos filtrados
-    st.subheader("📋 Datos Filtrados")
-    st.dataframe(df_filtrado)
+    #st.subheader("📋 Datos Filtrados")
+    #st.dataframe(df_filtrado)
 
     # Graficar datos
     if not df_filtrado.empty:
