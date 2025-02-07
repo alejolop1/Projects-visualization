@@ -9,7 +9,6 @@ st.set_page_config(page_title="Producción Energética", page_icon="⚡", layout
 
 # Crear conexión con la base de datos
 conexion = MySQLConnection()
-engine = conexion.conectar()
 
 # Título
 st.title("📊 Producción Energética")
@@ -31,9 +30,12 @@ def reset_filters():
     }
 
 try:
+    # Obtener una sesión desde el pool de conexiones
+    session = conexion.obtener_sesion()
+
     # Consulta SQL
     consulta_sql = "SELECT * FROM produccion_anp;"
-    df = pd.read_sql(consulta_sql, engine)
+    df = pd.read_sql(consulta_sql, session.connection())
 
     # Convertir la columna 'fecha' a datetime
     df["fecha"] = pd.to_datetime(df["fecha"], format='%Y-%m-%d %H:%M:%S.%f')
@@ -118,6 +120,11 @@ try:
 
 except Exception as e:
     st.error(f"Error al cargar los datos: {e}")
+
+finally:
+    # Cerrar la sesión después de usarla
+    if 'session' in locals():
+        conexion.cerrar_sesion(session)
 
 # Recargar cada tantos segundos
 st_autorefresh(interval=10 * 1000, key="data_refresh")
